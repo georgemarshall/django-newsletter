@@ -1,10 +1,11 @@
-import os, logging
+import logging
+import os
+
+from django.conf import settings
+from django.template import Library
+import Image
 
 logger = logging.getLogger(__name__)
-
-import Image
-from django.template import Library
-from django.conf import settings
 
 register = Library()
 

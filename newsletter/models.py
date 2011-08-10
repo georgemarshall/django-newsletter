@@ -1,27 +1,20 @@
-import random, logging
-
-logger = logging.getLogger(__name__)
-
+from __future__ import absolute_import
 from datetime import datetime
-
-from django.db import models
-from django.db.models import permalink
-
-from django.template import Template, Context
-
-from django.utils.translation import ugettext_lazy as _
-from django.utils.translation import ugettext
-
-from django.utils.hashcompat import sha_constructor
-
-from django.core.mail import EmailMultiAlternatives
-
-from django.contrib.sites.models import Site
-from django.contrib.sites.managers import CurrentSiteManager
-
-from django.contrib.auth.models import User
+import logging
+import random
 
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.sites.managers import CurrentSiteManager
+from django.contrib.sites.models import Site
+from django.core.mail import EmailMultiAlternatives
+from django.db import models
+from django.db.models import permalink
+from django.template import Template, Context
+from django.utils.hashcompat import sha_constructor
+from django.utils.translation import ugettext, ugettext_lazy as _
+
+logger = logging.getLogger(__name__)
 
 def make_activation_code():
     return sha_constructor(sha_constructor(str(random.random())).hexdigest()[:5]+str(datetime.now().microsecond)).hexdigest()

@@ -1,12 +1,12 @@
+from __future__ import absolute_import
 import logging    
 
-logger = logging.getLogger(__name__)
-
+from django.utils.translation import ugettext as _
 from django_extensions.management.jobs import HourlyJob
 
-from django.utils.translation import ugettext as _
-from newsletter.models import Submission
+from ...models import Submission
 
+logger = logging.getLogger(__name__)
 
 class Job(HourlyJob):
     help = "Submit pending messages."

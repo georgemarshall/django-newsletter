@@ -1,11 +1,10 @@
+from __future__ import absolute_import
 import logging
-                               
-logger = logging.getLogger(__name__)
-
-from django.utils.translation import ugettext_lazy as _
-from django.utils.translation import ugettext
 
 from django import forms
+from django.conf import settings
+from django.template import Template
+from django.utils.translation import ugettext, ugettext_lazy as _
 
 try:
     # Django 1.2
@@ -14,10 +13,10 @@ except ImportError:
     # Django legacy
     from django.forms.fields import email_re
 
-from django.conf import settings
+from .models import Submission, Subscription, Newsletter, EmailTemplate
 
-from models import *
-    
+logger = logging.getLogger(__name__)
+
 def make_subscription(newsletter, email, name=None):
     if Subscription.objects.filter(newsletter__id=newsletter.id, subscribed=True, email_field__exact=email).count():
         return None

@@ -1,5 +1,10 @@
+from __future__ import absolute_import
+
 from django.contrib.admin.util import unquote
+from django.http import Http404
 from django.utils.functional import update_wrapper
+from django.utils.translation import ugettext_lazy as _
+from django.contrib.admin.util import escape, force_unicode
 
 class ExtendibleModelAdminMixin(object):
     def _getobj(self, request, object_id):

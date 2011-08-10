@@ -1,12 +1,11 @@
-from django.utils.translation import ugettext_lazy as _
+from __future__ import absolute_import
 
 from django import forms
-from django.forms import widgets
-from django.forms.util import ValidationError, ErrorList
-
 from django.contrib.auth.models import User
+from django.forms.util import ValidationError
+from django.utils.translation import ugettext_lazy as _
 
-from models import Subscription
+from .models import Subscription
 
 class NewsletterForm(forms.ModelForm):
     """ This is the base class for all forms managing subscriptions. """

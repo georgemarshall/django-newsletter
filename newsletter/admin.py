@@ -1,34 +1,20 @@
+from __future__ import absolute_import
+from datetime import datetime
 import logging 
 
-logger = logging.getLogger(__name__)
-
-from datetime import datetime
-
+from django import forms
+from django.db import models
 from django.conf import settings
 from django.conf.urls.defaults import patterns, url
-
 from django.contrib import admin
 from django.contrib.admin.util import force_unicode
 from django.contrib.sites.models import Site
-
 from django.core import serializers
-from django.core.exceptions import PermissionDenied
-from django.core.urlresolvers import reverse
-
-from django.db.models import permalink
-
-from django.forms.util import ValidationError
-
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-
-from django.template import RequestContext, Context
-
 from django.shortcuts import render_to_response
-
+from django.template import RequestContext, Context
 from django.utils.translation import ugettext, ugettext_lazy as _
-
 from tinymce.widgets import TinyMCE
-
 
 # This function is new in Django 1.2 - fallback to dummy identity
 # function not to break compatibility with older releases.
@@ -37,10 +23,11 @@ try:
 except ImportError:
     date_format = lambda value, format=None: value
 
-from models import EmailTemplate, Newsletter, Subscription, Article, Message, Submission
+from .admin_forms import ConfirmForm, ImportForm, SubscriptionAdminForm, EmailTemplateAdminForm, SubmissionAdminForm
+from .admin_utils import ExtendibleModelAdminMixin
+from .models import EmailTemplate, Newsletter, Subscription, Article, Message, Submission
 
-from admin_forms import *
-from admin_utils import *
+logger = logging.getLogger(__name__)
 
 class NewsletterAdmin(admin.ModelAdmin):
     list_display = ('title', 'admin_subscriptions', 'admin_messages', 'admin_submissions')
@@ -410,7 +397,7 @@ class SubscriptionAdmin(admin.ModelAdmin, ExtendibleModelAdminMixin):
     def get_urls(self):
         urls = super(SubscriptionAdmin, self).get_urls()
                 
-        info = self.model._meta.app_label, self.model._meta.module_name
+        # info = self.model._meta.app_label, self.model._meta.module_name
         
         my_urls = patterns('',
             url(r'^import/$', 

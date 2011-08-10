@@ -1,29 +1,21 @@
+from __future__ import absolute_import
 import logging
 
-logger = logging.getLogger(__name__)
-
-from datetime import datetime
-
 from django.conf import settings
-
-from django.template import RequestContext
-
-from django.shortcuts import get_object_or_404, get_list_or_404, render_to_response
-from django.http import HttpResponseRedirect, HttpResponse, Http404
-
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.sites.models import Site
+from django.forms.models import modelformset_factory
+from django.http import HttpResponse, Http404
+from django.shortcuts import get_object_or_404, render_to_response
+from django.template import RequestContext, Context
+from django.utils.translation import ugettext, ugettext_lazy as _
 from django.views.generic import list_detail, date_based 
 
-from django.contrib import messages
-from django.contrib.sites.models import Site
-from django.contrib.auth.decorators import login_required
+from .forms import SubscribeRequestForm, UnsubscribeRequestForm, UpdateForm, UpdateRequestForm, UserUpdateForm
+from .models import Newsletter, Subscription, Submission, EmailTemplate
 
-from django.utils.translation import ugettext, ugettext_lazy as _
-
-from newsletter.models import *
-from newsletter.forms import *
-
-from django.forms.models import modelformset_factory
-
+logger = logging.getLogger(__name__)
 
 def newsletter_list(request):
     newsletters = Newsletter.on_site.filter(visible=True)
@@ -42,7 +34,7 @@ def newsletter_list(request):
         if request.method == 'POST':
             formset = SubscriptionFormSet(request.POST, queryset=qs)
             if formset.is_valid():
-                instances = formset.save()
+                formset.save()
                 messages.info(request, _("Your changes have been saved."))
             else:
                 assert False, 'An invalid user update request was recieved.'
