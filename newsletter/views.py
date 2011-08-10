@@ -13,6 +13,7 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 
 from django.views.generic import list_detail, date_based 
 
+from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.contrib.auth.decorators import login_required
 
@@ -42,7 +43,7 @@ def newsletter_list(request):
             formset = SubscriptionFormSet(request.POST, queryset=qs)
             if formset.is_valid():
                 instances = formset.save()
-                request.user.message_set.create(message=_("Your changes have been saved."))
+                messages.info(request, _("Your changes have been saved."))
             else:
                 assert False, 'An invalid user update request was recieved.'
         else:
@@ -74,11 +75,11 @@ def subscribe_user(request, newsletter_slug, confirm=False):
         instance.subscribed = True
         instance.save()
         
-        request.user.message_set.create(message=_('You have been subscribed to %s.') % my_newsletter)        
+        messages.success(request, _('You have been subscribed to %s.') % my_newsletter)        
         logger.debug(_('User %(rs)s subscribed to %(my_newsletter)s.') % {"rs":request.user, "my_newsletter": my_newsletter})
 
     if already_subscribed:
-        request.user.message_set.create(message=_('You are already subscribed to %s.') % my_newsletter) 
+        messages.info(request, _('You are already subscribed to %s.') % my_newsletter) 
         
     env = { 'newsletter'            : my_newsletter,
             'action'                : 'subscribe',}
@@ -100,14 +101,14 @@ def unsubscribe_user(request, newsletter_slug, confirm=False):
             instance.subscribed=False
             instance.save()
         
-            request.user.message_set.create(message=_('You have been unsubscribed from %s.') % my_newsletter)        
+            messages.success(request, _('You have been unsubscribed from %s.') % my_newsletter)        
             logger.debug(_('User %(rs)s unsubscribed from %(my_newsletter)s.') % {"rs":request.user, "my_newsletter":my_newsletter })
         
     except Subscription.DoesNotExist:
         not_subscribed = True
     
     if not_subscribed:
-        request.user.message_set.create(message=_('You are not subscribed to %s.') % my_newsletter)         
+        messages.info(request, _('You are not subscribed to %s.') % my_newsletter)         
     
     env = { 'newsletter'     : my_newsletter,
             'action'         : 'unsubscribe' }
